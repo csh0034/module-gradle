@@ -11,23 +11,22 @@ bootJar {
     enabled(false)
 }
 
-// @Tag 이용
-//task initDB(type: Test) {
+////@Tag 이용
+//task initDBTaskWithTag(type: Test) {
 //    useJUnitPlatform {
 //        includeTags 'init-db'
 //    }
 //}
 //
 //test {
-//    dependsOn("initDB")
+//    dependsOn('initDBTaskWithTag')
 //    useJUnitPlatform {
 //        excludeTags 'init-db'
 //    }
 //}
 
-
 // 클래스 이름 이용
-task initDBTask(type: Test) {
+task initDBTaskWithClassName(type: Test) {
     useJUnitPlatform {
         filter {
             includeTestsMatching('InitDB')
@@ -36,7 +35,7 @@ task initDBTask(type: Test) {
 }
 
 test {
-    dependsOn('initDBTask')
+    dependsOn('initDBTaskWithClassName')
     useJUnitPlatform {
         filter {
             excludeTestsMatching('InitDB')

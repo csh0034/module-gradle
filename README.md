@@ -30,6 +30,88 @@ configurations {
 }
 ```
 
+### 특정 TASK 이전에 다른 TASK 실행
+```groovy
+dependencies {
+    testImplementation 'org.dbunit:dbunit:2.7.0'
+}
+
+jar {
+    enabled(true)
+    archiveClassifier.set('')   // suffix "-plain" 제거
+}
+
+bootJar {
+    enabled(false)
+}
+
+//@Tag 이용
+task initDBTaskWithTag(type: Test) {
+    useJUnitPlatform {
+        includeTags 'init-db'
+    }
+}
+
+test {
+    dependsOn('initDBTaskWithTag')
+    useJUnitPlatform {
+        excludeTags 'init-db'
+    }
+}
+
+// 클래스명 이용
+task initDBTaskWithClassName(type: Test) {
+    useJUnitPlatform {
+        filter {
+            includeTestsMatching('InitDB')
+        }
+    }
+}
+
+test {
+    dependsOn('initDBTaskWithClassName')
+    useJUnitPlatform {
+        filter {
+            excludeTestsMatching('InitDB')
+        }
+    }
+}
+```
+
+### ROOT 프로젝트 빌드시에 의존성 지정
+- 하위 프로젝트중에 특정 모듈 먼저 빌드 할때 지정
+- jar disabled 처리해야 ROOT 모듈의 lib 생성 안됨
+```groovy
+tasks {
+    jar {
+        enabled(false)
+    }
+    test {
+        dependsOn(':module-core:test')
+    }
+    build {
+        dependsOn(':module-core:build')
+    }
+}
+```
+
+### SPRING BOOT BUILD INFO
+- org.springframework.boot.info.BuildProperties 인젝션 받아 사용
+- 빌드성능과 재빌드시에 속도 향상을 위해선 time 을 null 주면됨
+- additional 을 이용하여 BuildProperties 에 값 추가 가능
+```groovy
+ springBoot {
+    buildInfo {
+        properties {
+            time = null
+            if (System.getenv('build_number') != null) {
+                additional = ['build_number': System.getenv('build_number')]
+            }
+        }
+    }
+}
+```
+
 ## 참조
 - [Gradle, The Java Library Plugin](https://docs.gradle.org/current/userguide/java_library_plugin.html#sec:java_library_configurations_graph)
 - [Gradle, Declaring dependencies
