@@ -70,12 +70,12 @@ subprojects {
 
 tasks {
     jar {
-        enabled(false)
+        enabled = false
     }
     test {
-        dependsOn(':module-core:test')
+        dependsOn ':module-core:test'
     }
     build {
-        dependsOn(':module-core:build')
+        dependsOn ':module-core:build'
     }
 }

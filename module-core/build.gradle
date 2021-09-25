@@ -1,14 +1,14 @@
 dependencies {
-    testImplementation 'org.dbunit:dbunit:2.7.0'
+    testImplementation 'org.dbunit:dbunit:2.7.2'
 }
 
 jar {
-    enabled(true)
+    enabled = true
     archiveClassifier.set('')
 }
 
 bootJar {
-    enabled(false)
+    enabled = false
 }
 
 ////@Tag 이용
@@ -29,16 +29,16 @@ bootJar {
 task initDBTaskWithClassName(type: Test) {
     useJUnitPlatform {
         filter {
-            includeTestsMatching('InitDB')
+            includeTestsMatching 'InitDB'
         }
     }
 }
 
 test {
-    dependsOn('initDBTaskWithClassName')
+    dependsOn 'initDBTaskWithClassName'
     useJUnitPlatform {
         filter {
-            excludeTestsMatching('InitDB')
+            excludeTestsMatching 'InitDB'
         }
     }
 }
