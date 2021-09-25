@@ -1,9 +1,10 @@
-package com.ask.moduleapi;
+package com.ask.modulecore.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ask.modulecore.entity.User;
-import com.ask.modulecore.repository.UserRepository;
+import java.util.Arrays;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,14 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 @Slf4j
-class ModuleApiApplicationTests {
+class UserRepositoryTest {
 
   @Autowired
   UserRepository userRepository;
-
-  @Test
-  void contextLoads() {
-  }
 
   @DisplayName("User 저장")
   @Test
@@ -37,4 +34,17 @@ class ModuleApiApplicationTests {
     assertThat(user).isEqualTo(savedUser);
   }
 
+  @DisplayName("User 삭제")
+  @Test
+  void delete() {
+    // given
+    log.info("UserRepositoryTest.delete");
+    List<String> userIds = Arrays.asList("user-01", "user-02");
+
+    // when
+    userRepository.deleteAllById(userIds);
+
+    // then
+    assertThat(userRepository.count()).isZero();
+  }
 }

@@ -1,0 +1,4 @@
+<dataset>
+  <tb_user user_id="user-01" name="userName1" password="userPass1" />
+  <tb_user user_id="user-02" name="userName2" password="userPass2" />
+</dataset>

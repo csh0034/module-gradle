@@ -12,9 +12,12 @@ buildscript {
     }
 }
 
-subprojects {
+allprojects {
     apply plugin: 'java'
     apply plugin: 'java-library'
+}
+
+subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
 
@@ -34,6 +37,7 @@ subprojects {
 
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.mariadb.jdbc:mariadb-java-client'
 
         // lombok
         compileOnly 'org.projectlombok:lombok'
@@ -42,11 +46,36 @@ subprojects {
         testAnnotationProcessor 'org.projectlombok:lombok'
 
         annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
         developmentOnly 'org.springframework.boot:spring-boot-devtools'
     }
 
     test {
         useJUnitPlatform()
+    }
+
+    springBoot {
+        buildInfo {
+            properties {
+                time = null
+                if (System.getenv('build_number') != null) {
+                    additional = ['build_number': System.getenv('build_number')]
+                }
+            }
+        }
+    }
+}
+
+tasks {
+    jar {
+        enabled(false)
+    }
+    test {
+        dependsOn(':module-core:test')
+    }
+    build {
+        dependsOn(':module-core:build')
     }
 }

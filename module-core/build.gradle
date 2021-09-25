@@ -1,4 +1,5 @@
 dependencies {
+    testImplementation 'org.dbunit:dbunit:2.7.0'
 }
 
 jar {
@@ -8,4 +9,37 @@ jar {
 
 bootJar {
     enabled(false)
+}
+
+// @Tag 이용
+//task initDB(type: Test) {
+//    useJUnitPlatform {
+//        includeTags 'init-db'
+//    }
+//}
+//
+//test {
+//    dependsOn("initDB")
+//    useJUnitPlatform {
+//        excludeTags 'init-db'
+//    }
+//}
+
+
+// 클래스 이름 이용
+task initDBTask(type: Test) {
+    useJUnitPlatform {
+        filter {
+            includeTestsMatching('InitDB')
+        }
+    }
+}
+
+test {
+    dependsOn('initDBTask')
+    useJUnitPlatform {
+        filter {
+            excludeTestsMatching('InitDB')
+        }
+    }
 }
