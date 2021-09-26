@@ -30,22 +30,30 @@ configurations {
 }
 ```
 
-### 특정 TASK 이전에 다른 TASK 실행
+### [Task 사이의 의존 및 순서](https://docs.gradle.org/current/userguide/more_about_tasks.html)
+- taskA dependsOn taskB
+  - taskA 를 실행하기전에 taskB 이 먼저 수행됨
+- taskA mustRunAfter taskB
+    - 2개의 작업이 실행될 순서를 제어함
+    - 동시에 작업을 할경우 taskB 이후에 teskA가 실행됨
+- taskA finalizedBy taskB
+  - taskA 후에 taskB 가 수행 되도록 작업 그래프에 추가
+  
 ```groovy
 dependencies {
-    testImplementation 'org.dbunit:dbunit:2.7.0'
+    testImplementation 'org.dbunit:dbunit'
 }
 
 jar {
-    enabled(true)
-    archiveClassifier.set('')   // suffix "-plain" 제거
+    enabled = true
+    archiveClassifier.set('')
 }
 
 bootJar {
-    enabled(false)
+    enabled = false
 }
 
-//@Tag 이용
+// @Tag 이용
 task initDBTaskWithTag(type: Test) {
     useJUnitPlatform {
         includeTags 'init-db'
@@ -59,7 +67,7 @@ test {
     }
 }
 
-// 클래스명 이용
+// filter, 클래스 이름 이용
 task initDBTaskWithClassName(type: Test) {
     useJUnitPlatform {
         filter {
@@ -76,6 +84,73 @@ test {
         }
     }
 }
+
+// test Task include, exclude 이용
+task initDBTaskWithPath(type: Test) {
+    useJUnitPlatform()
+
+    // 경로로 설정해야함
+    include '**/InitDB*'
+
+    // 시스템 프로퍼티 테스트
+    systemProperty 'init.db.enabled', 'true'
+
+//    Fail the 'test' task on the first test failure
+//    failFast = true
+}
+
+test {
+    dependsOn 'initDBTaskWithPath'
+    useJUnitPlatform()
+
+    exclude '**/InitDB*'
+}
+```
+
+### Test Filtering
+- [TestFilter](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/testing/TestFilter.html)
+  - includeTest(String className, String methodName)
+  - includeTestsMatching(String testNamePattern)
+  - excludeTest(String className, String methodName)
+  - excludeTestsMatching(String testNamePattern)
+- [JUnitPlatformOptions](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/testing/junitplatform/JUnitPlatformOptions.html)
+  - includeTags(String... includeTags)
+  - includeEngines(String... includeEngines)
+  - excludeTags(String... excludeTags)
+  - excludeEngines(String... excludeEngines)
+  
+```groovy
+apply plugin: 'java'
+
+test {
+
+   // 디렉토리 기준 파일 경로명으로 설정 해야함 (**, *)
+   include '**/InitDB*'
+   exclude 'org/boo/**'
+
+   filter {
+       // FQCN, 클래스명, 클래스명.메서드명 (wildcard * 사용 가능)
+       includeTestsMatching 'SomeTest'
+       includeTestsMatching 'SomeTest.someTestMethod*'
+
+       // FQCN
+       includeTestsMatching 'org.gradle.SomeTest'
+
+       // 클래스명 및 메서드에 wildcard 사용
+       includeTestsMatching '*SomeTest.*someSpecificFeature'
+
+       // 패키지에 wildcard
+       includeTestsMatching '*.SomeTest'
+   }
+   
+   useJUnitPlatform {
+       includeTags 'fast', 'unit'
+       excludeTags 'slow', 'integration'
+
+       includeEngines 'junit-jupiter'
+       excludeEngines 'junit-vintage'
+   }
+}
 ```
 
 ### ROOT 프로젝트 빌드시에 의존성 지정
@@ -84,16 +159,28 @@ test {
 ```groovy
 tasks {
     jar {
-        enabled(false)
+        enabled = false
     }
     test {
-        dependsOn(':module-core:test')
+        dependsOn ':module-core:test'
     }
     build {
-        dependsOn(':module-core:build')
+        dependsOn ':module-core:build'
     }
 }
 ```
+
+### [transitive dependencies](https://docs.gradle.org/current/userguide/dependency_constraints.html)
+- root project 에서 constraints 선언후 sub project 에서 버전 없이 사용 가능
+```groovy
+dependencies {
+    constraints {
+        testImplementation 'org.dbunit:dbunit:2.7.2'
+    }
+    testImplementation 'org.dbunit:dbunit'
+}
+```
+
 
 ### SPRING BOOT BUILD INFO
 - org.springframework.boot.info.BuildProperties 인젝션 받아 사용
@@ -116,5 +203,6 @@ tasks {
 - [Gradle, The Java Library Plugin](https://docs.gradle.org/current/userguide/java_library_plugin.html#sec:java_library_configurations_graph)
 - [Gradle, Declaring dependencies
   ](https://docs.gradle.org/current/userguide/declaring_dependencies.html)
+- [Gradle, test task](https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.Test.html)
 - [Spring Boot, the Java Plugin
   ](https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#reacting-to-other-plugins.java)
