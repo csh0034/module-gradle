@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.5.4'
+        springBootVersion = '2.5.5'
         dependencyManagementVersion = '1.0.11.RELEASE'
     }
     repositories {
@@ -15,15 +15,15 @@ buildscript {
 allprojects {
     apply plugin: 'java'
     apply plugin: 'java-library'
+
+    group 'com.ask'
+    version '1.0-SNAPSHOT'
+    sourceCompatibility = 1.8
 }
 
 subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
-
-    group 'com.ask'
-    version '1.0-SNAPSHOT'
-    sourceCompatibility = 1.8
 
     configurations {
         compileOnly {

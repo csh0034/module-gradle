@@ -1,0 +1,76 @@
+plugins {
+    id 'jacoco'
+}
+
+dependencies {
+    implementation project(':module-core')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+}
+
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    finalizedBy jacocoTestCoverageVerification
+    reports {
+        html.required.set(true)
+        xml.required.set(false)
+        csv.required.set(false)
+    }
+
+    def qDomains = []
+    for (qPattern in '**/QA'..'**/QZ') {
+        qDomains.add(qPattern + '*')
+    }
+
+    // 디렉토리 기준 파일 경로명으로 설정 해야함 (**, *)
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    '**/ModuleJacocoApplication*',
+                    '**/*Request*',
+                    '**/*Response*',
+                    '**/*VO*',
+                    '**/*Interceptor*',
+                    '**/*Exception*'
+            ] + qDomains)
+        }))
+    }
+}
+
+jacocoTestCoverageVerification {
+    def qDomains = []
+    for (qPattern in '*.QA'..'*.QZ') {
+        qDomains.add(qPattern + '*')
+    }
+
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.50
+            }
+
+            //  Names can use wildcard (* and ?). Defaults to an empty list.
+            //  패키지 + 클래스명 으로 설정해야함
+            excludes = [
+                    '*.ModuleJacocoApplication*',
+                    '*.*Request*',
+                    '*.*Response*',
+                    '*.*VO*',
+                    '*.*Interceptor*',
+                    '*.*Exception*'
+            ] + qDomains
+        }
+    }
+}
