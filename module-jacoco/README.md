@@ -110,8 +110,8 @@ jacocoTestCoverageVerification {
 - MISSEDRATIO: 커버되지 않은 비율. 0부터 1 사이의 숫자로, 1이 100%입니다.
 
 ### Exclude Jacoco Test
-- Report 대상에서 제외의 경우 디렉토리 기준 파일 경로로 설정해야함 ex) `**/ModuleJacocoApplication`
-- 패키지 + 클래스명 으로 설정해야함 ex) `*.ModuleJacocoApplication*`
+- Report 대상에서 제외할 경우 디렉토리 기준 파일 경로로 설정해야함 ex) `**/ModuleJacocoApplication`
+- Coverage Verification 대상에서 제외할 경우 패키지 + 클래스명 으로 설정해야함 ex) `*.ModuleJacocoApplication*`
 ```groovy
 jacocoTestReport {
     // QueryDSL 사용시 QDomain 제외
