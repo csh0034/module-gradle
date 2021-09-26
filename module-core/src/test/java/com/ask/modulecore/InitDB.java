@@ -10,6 +10,7 @@ import org.dbunit.ext.mysql.MySqlConnection;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -27,6 +28,7 @@ public class InitDB {
   @Autowired
   private DataSource dataSource;
 
+  @EnabledIfSystemProperty(named = "init.db.enabled", matches = "true")
   @Test
   void init() throws Exception {
     log.info("InitDB.init");

@@ -19,6 +19,12 @@ allprojects {
     group 'com.ask'
     version '1.0-SNAPSHOT'
     sourceCompatibility = 1.8
+
+    dependencies {
+        constraints {
+            testImplementation 'org.dbunit:dbunit:2.7.2'
+        }
+    }
 }
 
 subprojects {
