@@ -1,6 +1,21 @@
 # Gradle Multi Module
 
 ## Gradle 설정
+
+### What is Gradle
+- 빌드 자동화 시스템
+- Maven을 대체할 수 있는 프로젝트 구성 관리 및 범용 빌드 툴
+- 스크립트 기반의 build.gradle 파일로 관리
+- JVM의 **동적 타이핑 언어**인 groovy로 만들었다.
+
+### Gradle 특징
+- Incrementality (증분성) : Gradle은 가능한 경우 변경된 파일만 작업해 중복 작업을 피한다. → 증분 빌드
+- Build cache : 동일한 입력에 대해서 gradle 빌드를 재사용 한다.
+- Gradle 데몬 : 빌드 정보를 메모리에 유지하는 프로세스를 구동한다.
+- [Compile avoidance](https://blog.gradle.org/incremental-compiler-avoidance) (컴파일 회피) : 
+  app -> core -> utils 종속 구성일 경우 utils 변경시에 core를 컴파일하지 않고 **utils 만 재컴파일** 하며 app 에서 바로 변경된 코드 적용, 개발시에 다시 build 하지 않아도 사용 가능함
+- 의존성 관리 : api, implementation 등의 다양한 의존성 선언 방법으로 원치 않는 종속성을 처리할 수 있음. 
+
 ### configurations
 - api
   - A -> B 의존 관계일 경우 A의 의존성이 B에도 전달됨
