@@ -214,6 +214,51 @@ dependencies {
 }
 ```
 
+### Gradle Properties
+**Local Variables**
+- def key = 'value'
+
+
+**[Extra Properties](https://docs.gradle.org/current/dsl/org.gradle.api.plugins.ExtensionAware.html)**
+- 모든 Extra Properties 는 "ext" 네임스페이스를 통해 정의해야 한다.
+- ext 에 선언시에 project.properties 로 자동으로 들어감.
+- {task or project}.ext.{key} = 'value'
+- {task or project}.ext == {task or project}.extensions.extraProperties
+
+```groovy
+// read gradle.properties
+assert project.hasProperty('sample.name')
+assert project.properties.get('sample.name') != null
+
+// ext 이용
+project.ext.myProperty = 'myValue'
+assert project.myProperty == 'myValue'
+assert project.hasProperty('myProperty')
+
+project.ext {
+    valueTest = 'secondeValue'
+}
+assert project.hasProperty('valueTest')
+assert valueTest == 'secondeValue'
+```
+
+<br>
+
+**[Spring Boot Application.yml 에서 프로퍼티 사용](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.properties-and-configuration.expand-properties.gradle)**
+- [관련 블로그](https://tristanfarmer.dev/blog/gradle_property_expansion_spring_boot)
+
+> Gradle 빌드 스크립트는 기본적으로 Groovy 스크립트이기 때문 Maven 스타일의 점으로 구분된 이름을 사용할 경우  
+> 객체 필드 액세스로 해석한다. 따라서 [Gradle 에서 권장 되지 않음](https://discuss.gradle.org/t/dotted-properties-in-gradle/6845)  
+> `project.properties['database.host']`, `${project['sample.name']}`
+
+```groovy
+processResources {
+    filesMatching('**/application.yml') {
+        expand project.properties
+    }
+}
+```
+
 ## 참조
 - [Gradle, The Java Library Plugin](https://docs.gradle.org/current/userguide/java_library_plugin.html#sec:java_library_configurations_graph)
 - [Gradle, Declaring dependencies

@@ -2,3 +2,35 @@ dependencies {
     implementation project(':module-core')
     implementation 'org.springframework.boot:spring-boot-starter-web'
 }
+
+processResources {
+
+    // gradle.properties
+    assert project.hasProperty('sample.name')
+    assert project.properties.get('sample.name') != null
+
+    // ext 이용
+    project.ext.myProperty = 'myValue'
+    assert project.myProperty == 'myValue'
+    assert project.hasProperty('myProperty')
+
+    project.ext {
+        valueTest = 'secondeValue'
+    }
+    assert project.hasProperty('valueTest')
+    assert valueTest == 'secondeValue'
+
+
+//    for (def prop : project.ext.properties) {
+//        println prop
+//    }
+//    println '---------------------------------------'
+//    println '---------------------------------------'
+//    for (def prop2 : project.properties) {
+//        println prop2
+//    }
+
+    filesMatching('**/application.yml') {
+        expand project.properties
+    }
+}
