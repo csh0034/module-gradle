@@ -1,2 +1,3 @@
 rootProject.name = 'module-gradle'
 include 'module-core', 'module-api', 'module-batch', 'module-jacoco'
+include 'module-sub', 'module-sub:module-sub-1', 'module-sub:module-sub-2'

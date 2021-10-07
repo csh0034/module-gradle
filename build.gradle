@@ -64,6 +64,7 @@ subprojects {
 
     springBoot {
         buildInfo {
+            // default destinationDir = file("$buildDir/resources/main/META-INF/build-info.properties")
             properties {
                 time = null
                 if (System.getenv('build_number') != null) {
