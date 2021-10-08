@@ -2,4 +2,5 @@ server:
   port: 8081
 
 sample:
-  name: "${project['sample.name']}"
+  name: ${project['sample.name']}   # use dot property
+  name2: \${sample.name} # escape gradle parsing

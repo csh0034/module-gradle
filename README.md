@@ -246,7 +246,12 @@ assert valueTest == 'secondeValue'
 
 **[Spring Boot Application.yml 에서 프로퍼티 사용](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.properties-and-configuration.expand-properties.gradle)**
 - [관련 블로그](https://tristanfarmer.dev/blog/gradle_property_expansion_spring_boot)
-
+- [Copy task, expand](https://docs.gradle.org/current/dsl/org.gradle.api.tasks.Copy.html#org.gradle.api.tasks.Copy:expand(java.util.Map))
+- [SimpleTemplateEngine](https://docs.groovy-lang.org/3.0.8/html/gapi/groovy/text/SimpleTemplateEngine.html) 사용하여 파싱처리
+  - JSP scriptlet syntax `<% %>`
+  - JSP expression syntax `<%=key%>`
+  - Groovy GString `$key`, `${key}`
+  - Escape 처리 : 앞에 백슬래시 추가, `\${key}`
 > Gradle 빌드 스크립트는 기본적으로 Groovy 스크립트이기 때문 Maven 스타일의 점으로 구분된 이름을 사용할 경우  
 > 객체 필드 액세스로 해석한다. 따라서 [Gradle 에서 권장 되지 않음](https://discuss.gradle.org/t/dotted-properties-in-gradle/6845)  
 > `project.properties['database.host']`, `${project['sample.name']}`
@@ -257,6 +262,14 @@ processResources {
         expand project.properties
     }
 }
+```
+```yaml
+sample:
+  name1: <%=sampleName%>
+  name2: ${sampleName}
+  name3: $sampleName
+  name4: <%=project['sample.name']%> # use dot property
+  name5: \${sampleName} # escape gradle parsing
 ```
 
 ## 참조
