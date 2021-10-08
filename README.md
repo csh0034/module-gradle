@@ -252,7 +252,7 @@ assert valueTest == 'secondeValue'
   - JSP expression syntax `<%=key%>`
   - Groovy GString `$key`, `${key}`
   - Escape 처리 : 앞에 백슬래시 추가, `\${key}`
-> Gradle 빌드 스크립트는 기본적으로 Groovy 스크립트이기 때문 Maven 스타일의 점으로 구분된 이름을 사용할 경우  
+> Gradle 빌드 스크립트는 기본적으로 Groovy 스크립트이기 때문에 Maven 스타일의 점으로 구분된 이름을 사용할 경우  
 > 객체 필드 액세스로 해석한다. 따라서 [Gradle 에서 권장 되지 않음](https://discuss.gradle.org/t/dotted-properties-in-gradle/6845)  
 > `project.properties['database.host']`, `${project['sample.name']}`
 
